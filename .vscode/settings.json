@@ -1,0 +1,5 @@
+{
+    "mplab.clangd.arguments": [
+        "--compile-commands-dir=${cwd}Users/thetrung/MPLABXProjects/45K50_SSD1306_I2C.X/_build/45K50_SSD1306_I2C/default"
+    ]
+}
