@@ -1,10 +1,12 @@
 /*
  * 20190312.006
- * OLED 128x32
+ * OLED 128x32 -> 128x64
  *
  * File: init.c
- * Processor: PIC16F1825
- * Author: wizlab.it
+ * Processor: PIC16F1825 -> PIC18F45k50
+ * Author: wizlab.it && modded by thetrung.
+ * 
+ * Now run on MPLAB X IDE 6.20+ && PICKIT5
  */
 
 #include "init.h"
@@ -35,26 +37,6 @@ void init(void) {
     */
 //    OPTION_REG = 0b11010111;
 
-    /*
-    * PORT A
-    *  - RA[7-6]: 00 (Not implemented)
-    *  - RA[5]: 0 (Output, I2C RXTX led)
-    *  - RA[4-0]: 1 (Input, Unused)
-    */
-//    TRISA = 0b00011111;
-//    ANSELA = 0b00000000;
-//    LATA = 0;
-
-    /*
-    * PORT C
-    *  - RC[7-6]: 00 (Not implemented)
-    *  - RC[5-2]: 1 (Input, Unused)
-    *  - RC[1]: 1 (Input, I2C Data [SDA])
-    *  - RC[0]: 1 (Input, I2C Clock [SCK])
-    */
-//    TRISC = 0b00111111;
-//    ANSELC = 0b00000000;
-//    LATC = 0;
     
     /* PORT B
      * RB[0] : 1 (Input, I2C Data [SDA]) 
