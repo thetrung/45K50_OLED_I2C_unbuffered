@@ -21,10 +21,16 @@ void main(void) {
 
     //Init display
     OLED_Init();
-    
+    __delay_ms(1000);
+    // Set pin RA0 as OUTPUT 
+    pinMode(PIN_RA0, OUTPUT);
+    __delay_ms(1000);
+    // Indicate Drawing start :
+    digitalWrite(RA0, HIGH);
+    __delay_ms(1);
+    digitalWrite(RA0, LOW);
     // Draw once but last 4ever ;)
-    __delay_ms(1500);
-   OLED_DrawRectangle(0,0, 127, 8);
+    OLED_DrawRectangle(0,0, 127, 8);
 
     //Looooooop
     while(1) loop();
