@@ -1,10 +1,10 @@
 /*
  * 20190312.014
- * OLED 128x32
+ * OLED 128x32 -> 128x64
  *
  * File: OLED.c
- * Processor: PIC16F1825
- * Author: wizlab.it
+ * Processor: PIC16F1825 -> PIC18F45K50
+ * Author: wizlab.it && thetrung.
  */
 
 #include "OLED.h"
@@ -123,9 +123,6 @@ void OLED_DrawBitmap(const uint8_t startPage, const uint8_t endPage, const uint8
     I2C_Master_Stop();
 }
 
-#define i8 uint8_t
-#define i16 uint16_t
-
 void OLED_DrawLine(
     const uint8_t x1, 
     const uint8_t y1, 
@@ -144,21 +141,21 @@ void OLED_DrawLine(
  * @param height
  */
 void OLED_DrawRectangle(
-    const i8 x, // 0..127
-    const i8 y, // 0..63
-    const i8 width, 
-    const i8 height){
-    const i8 page_start = y > 7 ? y % 8 : 0;
-    const i8 page_end   = y + height > 7 ? (y + height) % 8 : 0; 
+    const u8 x, // 0..127
+    const u8 y, // 0..63
+    const u8 width, 
+    const u8 height){
+    const u8 page_start = y > 7 ? y % 8 : 0;
+    const u8 page_end   = y + height > 7 ? (y + height) % 8 : 0; 
     
     OLED_SetPageAndColumnAddress(page_start, page_end, x, x + width);
     OLED_DATA_WRITE(page_start, page_end, x, x + width);
     
-    const i8 page0 = 0b11111111; // pretend that we only fill 128x1
+    const u8 page0 = 0b11111111; // pretend that we only fill 128x1
     I2C_Master_Write(page0);
     
-    for(i8 _x = 0; _x < x + width-2; _x++){
-        const i8 page = 0b10000001; // pretend that we only fill 128x1
+    for(u8 _x = 0; _x < x + width-2; _x++){
+        const u8 page = 0b10000001; // pretend that we only fill 128x1
         I2C_Master_Write(page);
     }
     
