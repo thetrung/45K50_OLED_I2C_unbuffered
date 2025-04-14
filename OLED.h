@@ -20,11 +20,14 @@
 #define INVERSE         2
 
 #define SSD1306_MEMORYMODE          0x20
+#define SSD1306_MEMORYMODE_VERT     0x01
+#define SSD1306_MEMORYMODE_HORZ     0x00
 #define SSD1306_COLUMNADDR          0x21
 #define SSD1306_PAGEADDR            0x22
 #define SSD1306_SETCONTRAST         0x81
 #define SSD1306_CHARGEPUMP          0x8D
 #define SSD1306_SEGREMAP            0xA0
+#define SSD1306_SEGREMAP_FLIP       0xA1
 #define SSD1306_DISPLAYALLON_RESUME 0xA4
 #define SSD1306_DISPLAYALLON        0xA5
 #define SSD1306_NORMALDISPLAY       0xA6
@@ -57,6 +60,9 @@
 
 #define FRAMEBUFFER 1024 // for 128x64
 
+#define CHAR_SIZE 5 // Character : 5x8 (1-page)
+
+
 void OLED_Command(uint8_t c);
 void OLED_Commands(const uint8_t *c, uint8_t n);
 void OLED_SetPageAndColumnAddress(const uint8_t startPage, const uint8_t endPage, const uint8_t startColumn, const uint8_t endColumn);
@@ -82,4 +88,6 @@ void OLED_DrawRectangle(
     const uint8_t y, // 0..63
     const uint8_t width, 
     const uint8_t height);
+void OLED_PutChar(u8 c, u8 x, u8 y);
+void OLED_Printf(const char* c, u8 x, u8 y);
 #endif

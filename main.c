@@ -30,7 +30,11 @@ void main(void) {
     
 //    OLED_DrawRectangle(0,0, 127, 8);
     OLED_Draw_H_Line(0, 127, 0);
-    OLED_Draw_H_Line(0, 127, 31);
+    OLED_Draw_H_Line(0, 127, 8);
+//    OLED_Draw_H_Line(0, 127, 16);
+    OLED_Draw_H_Line(0, 127, 32);
+//    OLED_Draw_H_Line(0, 127, 47);
+    OLED_Draw_H_Line(0, 127, 55);
     OLED_Draw_H_Line(0, 127, 63);
 //    OLED_Draw_H_Line(0, 127, 2);
 //    OLED_Draw_H_Line(0, 127, 7);
@@ -38,6 +42,26 @@ void main(void) {
     OLED_Draw_V_Line(0, 0, 63);
     OLED_Draw_V_Line(63, 0, 63);
     OLED_Draw_V_Line(127, 0, 63);
+    // Char Size = 4
+    // Render mode : 
+    // - MEM_HORZ
+    // - COMDEC
+    // - 
+//    OLED_PutChar('A', 123, 31);
+    /**
+     * TEXT RENDERING TEST :
+     * - 8 LINES at cost of 9 Pixels each.
+     * - HEIGHT [0..9]
+     * - WIDTH 5 
+     */
+    OLED_Printf(" Hello World "  ,0, 0);
+    OLED_Printf(" 01234567890~"  ,0, 9);
+    OLED_Printf(" QWERTYUIOP[]\\",0, 18);
+    OLED_Printf(" ASDFGHJKL:;  " ,0, 27);
+    OLED_Printf(" ZXCVBNM,./  "  ,0, 36);
+    OLED_Printf(" +-*/=!@#$%^&"  ,0, 45);
+    OLED_Printf(" NEWLINE "      ,0, 54);
+    OLED_Printf(" R E A D Y   "  ,0, 63);
 
     //Loop
     while(1) loop();
