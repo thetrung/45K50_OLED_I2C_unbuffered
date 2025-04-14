@@ -13,5 +13,6 @@
 #include "commons.h"
 
 void loop(void);
+void blink(void);
 
 #endif

@@ -9,7 +9,7 @@
 
 #include "main.h"
 
-uint8_t invert = 0x00;
+u8 invert = 0x00;
 
 /*==============================================================================
  * Main routine
@@ -18,26 +18,27 @@ uint8_t invert = 0x00;
  *============================================================================*/
 void main(void) {
     init();
-    __delay_ms(1000);
-    // Set pin RA0 as OUTPUT 
-    
-    pinMode(PIN_RA0, OUTPUT);
-    
-    // Indicate Drawing start :
-    digitalWrite(RA0, HIGH);
-    __delay_ms(1);
-    digitalWrite(RA0, LOW);
-    
+    delay(100);
+    blink();
     //Init display but require delay after initialize I/O.
     OLED_Init();
-    
+    blink();
     // Draw once but last 4ever ;)
     OLED_DrawRectangle(0,0, 127, 8);
 
-    //Looooooop
+    //Loop
     while(1) loop();
 }
 
+void blink(void){
+    // Set pin RA0 as OUTPUT 
+   pinMode(PIN_RA0, OUTPUT);
+   
+    digitalWrite(RA0, HIGH);
+    delay(1);
+    digitalWrite(RA0, LOW);
+    delay(1);
+}
 
 /*==============================================================================
  * Loop routine
