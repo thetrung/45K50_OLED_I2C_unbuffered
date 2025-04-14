@@ -49,7 +49,7 @@ void OLED_SetPageAndColumnAddress(const uint8_t startPage, const uint8_t endPage
     OLED_Commands(commands, sizeof(commands));
 }
 
-void OLED_Init(void) {
+void init_OLED(void) {
     const uint8_t commands[] = {
         SSD1306_DISPLAYOFF,             //Switch off display (0xAE)
         SSD1306_SETDISPLAYCLOCKDIV,     //Set Display Clock Divide (0xD5)
@@ -123,12 +123,68 @@ void OLED_DrawBitmap(const uint8_t startPage, const uint8_t endPage, const uint8
     I2C_Master_Stop();
 }
 
-void OLED_DrawLine(
-    const uint8_t x1, 
-    const uint8_t y1, 
+void OLED_Draw_H_Line(
+    const uint8_t x1,
     const uint8_t x2, 
+    const uint8_t y){
+    // swap order :
+    const u8 x_start = min(x1, x2);
+    const u8 x_end = max(x1, x2);
+    // y >> page + offset :
+    u8 single_page = y / 8;
+    u8 reminder =  y % 8;
+    // set page + column :
+    OLED_DATA_WRITE(single_page, single_page, x_start, x_end);
+    // Draw->I2C :
+    for(u8 _x = x_start; _x < x_end; _x++){
+        const u8 page = (1 << (reminder));
+        I2C_Master_Write(page);
+    }
+    I2C_Master_Stop();
+}
+
+/// Reserve 8 bytes for a single column.
+const u8 page_buffer[8] = {};    
+
+void OLED_Draw_V_Line(
+    const uint8_t x,
+    const uint8_t y1, 
     const uint8_t y2){
+    // swap order :
+    const u8 y_start = min(y1, y2);
+    const u8 y_end = max(y1, y2);
+    // page start..end :
+    const u8 page_end = y_end/8;
+    const u8 page_start = y_start/8;
+    OLED_DATA_WRITE(page_start, page_end, x, x);
+    // in case both stay in the same page:
+    if(page_start == page_end){
+        // Same page !
+        
+    } else {
+        // fill through pages :
+        // | 0 | .. | 7 | 
+        const u8 body = 0b11111111;
+        // Head >> Body >> Tail
+        // 1111-1111 - (1 << 0)=0000-0001 + 1 
+        // = 1111-1110 + 1
+        // = 1111-1111
+        const u8 head = body - (1 << y_start) + 1; 
+        I2C_Master_Write(head);
+        // Body << only fill with 3+ pages
+        // 1111-1111
+        if(page_end - page_start > 1)
+        for(u8 i = page_start+1; i < page_end; i++){
+            I2C_Master_Write(body);
+        }
+        // Tail
+        // (1 << 7+1)=0000-0000 - 1
+        // 1111-1111
+        const u8 tail = (1 << (y_end + 1))-1; 
+        I2C_Master_Write(tail);
+    }
     
+    I2C_Master_Stop();
 }
 
 /**
@@ -145,11 +201,10 @@ void OLED_DrawRectangle(
     const u8 y, // 0..63
     const u8 width, 
     const u8 height){
-    const u8 page_start = y > 7 ? y % 8 : 0;
-    const u8 page_end   = y + height > 7 ? (y + height) % 8 : 0; 
+    const u8 y1 = y > 7 ? y % 8 : 0;
+    const u8 y2 = y + height > 7 ? (y + height) % 8 : 0; 
     
-    OLED_SetPageAndColumnAddress(page_start, page_end, x, x + width);
-    OLED_DATA_WRITE(page_start, page_end, x, x + width);
+    OLED_DATA_WRITE(y1, y2, x, x + width);
     
     const u8 page0 = 0b11111111; // pretend that we only fill 128x1
     I2C_Master_Write(page0);

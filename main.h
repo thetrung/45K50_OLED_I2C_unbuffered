@@ -10,7 +10,7 @@
 #ifndef MAIN_H
 #define	MAIN_H
 
-#include "commons.h"
+#include "init.h"
 
 void loop(void);
 void blink(void);

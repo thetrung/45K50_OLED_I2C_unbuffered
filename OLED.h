@@ -11,6 +11,7 @@
 #define	OLED_H
 
 #include "commons.h"
+#include "I2CMaster.h"
 
 #define _OLED_ADDR 0x3C
 
@@ -59,7 +60,7 @@
 void OLED_Command(uint8_t c);
 void OLED_Commands(const uint8_t *c, uint8_t n);
 void OLED_SetPageAndColumnAddress(const uint8_t startPage, const uint8_t endPage, const uint8_t startColumn, const uint8_t endColumn);
-void OLED_Init(void);
+void init_OLED(void);
 void OLED_ClearDisplay(void);
 void OLED_InvertDisplay(uint8_t i);
 void OLED_DATA_WRITE(
@@ -68,11 +69,14 @@ void OLED_DATA_WRITE(
     const uint8_t startColumn, 
     const uint8_t endColumn);
 void OLED_DrawBitmap(const uint8_t startPage, const uint8_t endPage, const uint8_t startColumn, const uint8_t endColumn, const uint8_t *bitmap, uint16_t bitmapSize);
-void OLED_DrawLine(
-    const uint8_t x1, 
+void OLED_Draw_V_Line(
+    const uint8_t x,
     const uint8_t y1, 
-    const uint8_t x2, 
     const uint8_t y2);
+void OLED_Draw_H_Line(
+    const uint8_t x1,
+    const uint8_t x2, 
+    const uint8_t y);
 void OLED_DrawRectangle(
     const uint8_t x, // 0..127
     const uint8_t y, // 0..63

@@ -11,6 +11,8 @@
 #define	INIT_H
 
 #include "commons.h"
+#include "I2CMaster.h"
+#include "OLED.h"
 
 #pragma config FOSC = INTOSCIO  // Oscillator Selection (Internal oscillator)
 #pragma config WDTEN = OFF      // Watch-Dog-Enable = OFF

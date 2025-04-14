@@ -18,13 +18,26 @@ u8 invert = 0x00;
  *============================================================================*/
 void main(void) {
     init();
+    blink();       // indicate finished init()
     delay(100);
-    blink();
-    //Init display but require delay after initialize I/O.
-    OLED_Init();
-    blink();
-    // Draw once but last 4ever ;)
-    OLED_DrawRectangle(0,0, 127, 8);
+    
+    init_OLED();    
+    blink();       
+    delay(100);
+    
+    // prepare to read AN1 with ADC :
+//    pinMode(PIN_RA1, INPUT);
+    
+//    OLED_DrawRectangle(0,0, 127, 8);
+    OLED_Draw_H_Line(0, 127, 0);
+    OLED_Draw_H_Line(0, 127, 31);
+    OLED_Draw_H_Line(0, 127, 63);
+//    OLED_Draw_H_Line(0, 127, 2);
+//    OLED_Draw_H_Line(0, 127, 7);
+//    OLED_Draw_H_Line(0, 127, 8);
+    OLED_Draw_V_Line(0, 0, 63);
+    OLED_Draw_V_Line(63, 0, 63);
+    OLED_Draw_V_Line(127, 0, 63);
 
     //Loop
     while(1) loop();
@@ -44,7 +57,7 @@ void blink(void){
  * Loop routine
  *============================================================================*/
 void loop(void) {
-    __delay_ms(1500);
+    __delay_ms(100);
     
     //Test
 //   const uint8_t image[] = {

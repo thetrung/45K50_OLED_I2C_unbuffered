@@ -1,22 +1,3 @@
-/*
- * 20190312.008
- * OLED 128x32
- *
- * File: commons.h
- * Processor: PIC16F1825
- * Author: wizlab.it
- */
-
-#ifndef COMMONS_H
-#define COMMONS_H
-
-#include <xc.h>
-#include <stdint.h>
-#include "I2CMaster.h"
-#include "OLED.h"
-
-#define _XTAL_FREQ 16000000     //CPU Frequency
-
 /* NOTE :: thetrung @ 12th April, 2025 ::
  *  
  * - Embrace on better Short-hand in simple C/Rust-style :
@@ -29,6 +10,15 @@
  * - Maybe, now beefy Pico/STM32/ESP32 are just for prototyping on Arduino-IDE.
  *   Then we port whatever worked well into PICs.
  */
+
+#ifndef COMMONS_H
+#define COMMONS_H
+
+#include <xc.h>
+#include <stdint.h>
+
+#define _XTAL_FREQ 16000000     //CPU Frequency
+// uintX_t
 #define u8 uint8_t
 #define u16 uint16_t
 
@@ -63,6 +53,9 @@
 // FUNCTIONS 
 #define pinMode(PIN, MODE) (PIN = MODE)
 #define digitalWrite(PORT, STATE) (PORT = STATE)
+#define min(x1, x2) (x1 < x2 ? x1 : x2)
+#define max(x1, x2) (x1 > x2 ? x1 : x2)
+
 #define delay __delay_ms
 
 //External functions
