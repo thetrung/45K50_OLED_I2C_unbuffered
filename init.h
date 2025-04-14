@@ -13,8 +13,9 @@
 #include "commons.h"
 
 #pragma config FOSC = INTOSCIO  // Oscillator Selection (Internal oscillator)
+#pragma config WDTEN = OFF      // Watch-Dog-Enable = OFF
+#pragma config MCLRE = OFF      // MCLR-Enable = OFF : LOW on reset.
 #pragma config LVP = OFF        // Low-Voltage (Single-Supply) In-Circuit Serial Programming Enable bit (RB3/PGM pin has PGM function; low-voltage programming enabled)
-
 void init(void);
 void __interrupt() isr(void);
 
