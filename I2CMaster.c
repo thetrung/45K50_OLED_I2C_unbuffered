@@ -1,12 +1,3 @@
-/*
- * 20190312.008
- * OLED 128x32
- *
- * File: I2CMaster.c
- * Processor: PIC16F1825
- * Author: wizlab.it
- */
-
 #include "I2CMaster.h"
 
 void I2C_Master_Init(const uint32_t c) {
