@@ -13,7 +13,29 @@
 #include "commons.h"
 #include "I2CMaster.h"
 
-#define _OLED_ADDR 0x3C
+#ifndef SSD1306_I2C_ADDRESS
+  #define SSD1306_I2C_ADDRESS   0x3C
+#endif
+
+#if !defined SSD1306_128_32 && !defined SSD1306_96_16
+#define SSD1306_128_64
+#endif
+#if defined SSD1306_128_32 && defined SSD1306_96_16
+  #error "Only one SSD1306 display can be specified at once"
+#endif
+
+#if defined SSD1306_128_64
+  #define SSD1306_LCDWIDTH            128
+  #define SSD1306_LCDHEIGHT            64
+#endif
+#if defined SSD1306_128_32
+  #define SSD1306_LCDWIDTH            128
+  #define SSD1306_LCDHEIGHT            32
+#endif
+#if defined SSD1306_96_16
+  #define SSD1306_LCDWIDTH             96
+  #define SSD1306_LCDHEIGHT            16
+#endif
 
 #define BLACK           0
 #define WHITE           1
@@ -71,6 +93,12 @@ void OLED_SetPageAndColumnAddress(const uint8_t startPage, const uint8_t endPage
 void init_OLED(void);
 void OLED_ClearDisplay(void);
 void OLED_InvertDisplay(uint8_t i);
+void OLED_StartScrollRight(u8 start, u8 stop);
+void OLED_StartScrollLeft(u8 start, u8 stop);
+void OLED_StartScrollDiagRight(u8 start, u8 stop);
+void OLED_StartScrollDiagLeft(u8 start, u8 stop);
+void OLED_StopScroll(void);
+void OLED_Dim(bool dim);
 void OLED_DATA_WRITE(
     const uint8_t startPage, 
     const uint8_t endPage, 
@@ -85,11 +113,17 @@ void OLED_Draw_H_Line(
     const uint8_t x1,
     const uint8_t x2, 
     const uint8_t y);
+void OLED_Erase_H_Line(
+    const uint8_t x1,
+    const uint8_t x2, 
+    const uint8_t y);
 void OLED_DrawRectangle(
     const uint8_t x, // 0..127
     const uint8_t y, // 0..63
     const uint8_t width, 
     const uint8_t height);
-void OLED_PutChar(u8 c, u8 x, u8 y);
 void OLED_Printf(const char* c, u8 x, u8 y);
+void OLED_Printfi(const char* c, u8 x, u8 y);
+void OLED_PutChar(u8 c, u8 x, u8 y, bool invert);
+void OLED_PrintString(const char* c, u8 x, u8 y, bool invert);
 #endif

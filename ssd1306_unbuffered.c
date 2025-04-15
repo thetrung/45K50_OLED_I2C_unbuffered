@@ -7,21 +7,22 @@
  * Unlike buffered version that require 1KB+ SRAM.
  */
 #include "ssd1306_unbuffered.h"
+#include "ssd1306_buffered.h"
 
 //static u8 framebuffer[128*64/8];
 
 void OLED_Command(uint8_t c) {
     I2C_Master_Start();
-    I2C_Master_Address(_OLED_ADDR, I2C_MODE_WRITE); //Send address
-    I2C_Master_Write((uint8_t)0x00);          //Control byte, next is command
+    I2C_Master_Address(SSD1306_I2C_ADDRESS, I2C_MODE_WRITE); //Send address
+    I2C_Master_Write((u8)0x00);          //Control byte, next is command
     I2C_Master_Write(c);                            //Command
     I2C_Master_Stop();
 }
 
 void OLED_Commands(const uint8_t *c, uint8_t n) {
     I2C_Master_Start();
-    I2C_Master_Address(_OLED_ADDR, I2C_MODE_WRITE); //Send address
-    I2C_Master_Write((uint8_t)0x00);          //Control byte, next are commands
+    I2C_Master_Address(SSD1306_I2C_ADDRESS, I2C_MODE_WRITE); //Send address
+    I2C_Master_Write((u8)0x00);          //Control byte, next are commands
     while(n--) {                                    //Loop in commands...
         I2C_Master_Write(*c);
         c++;
@@ -103,7 +104,7 @@ void init_OLED(void) {
 #endif
 //            0xF1,                       //Period to 0xF1
         SSD1306_SETVCOMDETECT,          //VCOMH Deselect Level (0xDB)
-            0x40,                       //Level to 0x20~0x40
+            0x20,                       //Level to 0x20~0x40
         SSD1306_DISPLAYALLON_RESUME,    //Display based on RAM (0xA4)
         SSD1306_NORMALDISPLAY,          //Normal display (0xA6)
         SSD1306_DEACTIVATE_SCROLL,      //Deactivate scroll (0x2E)
@@ -117,7 +118,7 @@ void OLED_ClearDisplay(void) {
     OLED_SetPageAndColumnAddress(0x00, 0x07, 0x00, 0x7F);
 
     I2C_Master_Start();
-    I2C_Master_Address(_OLED_ADDR, I2C_MODE_WRITE); //Send address
+    I2C_Master_Address(SSD1306_I2C_ADDRESS, I2C_MODE_WRITE); //Send address
     I2C_Master_Write((uint8_t)0x40);          //Control byte, next are data
     for(uint16_t byte=0; byte<FRAMEBUFFER; byte++) {       //Send a blank image (all zeroes)
         I2C_Master_Write(0X00);
@@ -125,8 +126,83 @@ void OLED_ClearDisplay(void) {
     I2C_Master_Stop();
 }
 
-void OLED_InvertDisplay(uint8_t i) {
+void OLED_InvertDisplay(u8 i) {
   OLED_Command((i == 0x01) ? SSD1306_INVERTDISPLAY : SSD1306_NORMALDISPLAY);
+}
+
+
+void OLED_StartScrollRight(u8 start, u8 stop)
+{
+  OLED_Command(SSD1306_RIGHT_HORIZONTAL_SCROLL);
+  OLED_Command(0X00);
+  OLED_Command(start);
+  OLED_Command(0X00);
+  OLED_Command(stop);
+  OLED_Command(0X00);
+  OLED_Command(0XFF);
+  OLED_Command(SSD1306_ACTIVATE_SCROLL);
+}
+
+void OLED_StartScrollLeft(u8 start, u8 stop)
+{
+  OLED_Command(SSD1306_LEFT_HORIZONTAL_SCROLL);
+  OLED_Command(0X00);
+  OLED_Command(start);
+  OLED_Command(0X00);
+  OLED_Command(stop);
+  OLED_Command(0X00);
+  OLED_Command(0XFF);
+  OLED_Command(SSD1306_ACTIVATE_SCROLL);
+}
+
+void OLED_StartScrollDiagRight(u8 start, u8 stop)
+{
+  OLED_Command(SSD1306_SET_VERTICAL_SCROLL_AREA);
+  OLED_Command(0X00);
+  OLED_Command(SSD1306_LCDHEIGHT);
+  OLED_Command(SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL);
+  OLED_Command(0X00);
+  OLED_Command(start);
+  OLED_Command(0X00);
+  OLED_Command(stop);
+  OLED_Command(0X01);
+  OLED_Command(SSD1306_ACTIVATE_SCROLL);
+}
+
+void OLED_StartScrollDiagLeft(u8 start, u8 stop)
+{
+  OLED_Command(SSD1306_SET_VERTICAL_SCROLL_AREA);
+  OLED_Command(0X00);
+  OLED_Command(SSD1306_LCDHEIGHT);
+  OLED_Command(SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL);
+  OLED_Command(0X00);
+  OLED_Command(start);
+  OLED_Command(0X00);
+  OLED_Command(stop);
+  OLED_Command(0X01);
+  OLED_Command(SSD1306_ACTIVATE_SCROLL);
+}
+
+void OLED_StopScroll(void)
+{
+  OLED_Command(SSD1306_DEACTIVATE_SCROLL);
+}
+
+void OLED_Dim(bool dim)
+{
+  u8 contrast;
+  if (dim)
+    contrast = 0; // Dimmed display
+  else contrast = 
+    #if defined SELECTED_SSD1306_EXTERNALVCC
+      0x9F;
+    #else
+      0xCF;
+    #endif
+  // the range of contrast to too small to be really useful
+  // it is useful to dim the display
+  OLED_Command(SSD1306_SETCONTRAST);
+  OLED_Command(contrast);
 }
 
 void OLED_DATA_WRITE(
@@ -136,7 +212,7 @@ void OLED_DATA_WRITE(
     const uint8_t endColumn){
     OLED_SetPageAndColumnAddress(startPage, endPage, startColumn, endColumn);
     I2C_Master_Start();
-    I2C_Master_Address(_OLED_ADDR, I2C_MODE_WRITE);     //Send address
+    I2C_Master_Address(SSD1306_I2C_ADDRESS, I2C_MODE_WRITE);     //Send address
     I2C_Master_Write((uint8_t)0x40);                    //Control byte, next are data
 }
 
@@ -154,10 +230,11 @@ void OLED_DrawBitmap(const uint8_t startPage, const uint8_t endPage, const uint8
     I2C_Master_Stop();
 }
 
-void OLED_Draw_H_Line(
-    const uint8_t x1,
-    const uint8_t x2, 
-    const uint8_t y){
+inline void _OLED_Draw_H_Line(
+    const u8 x1,
+    const u8 x2, 
+    const u8 y,
+    const bool invert){
     // swap order :
     const u8 x_start = min(x1, x2);
     const u8 x_end = max(x1, x2);
@@ -169,9 +246,23 @@ void OLED_Draw_H_Line(
     // Draw->I2C :
     for(u8 _x = x_start; _x < x_end; _x++){
         const u8 page = (1 << (reminder));
-        I2C_Master_Write(page);
+        I2C_Master_Write((invert ? 0 : 1) << page);
     }
     I2C_Master_Stop();
+}
+void OLED_Draw_H_Line(
+    const u8 x1,
+    const u8 x2, 
+    const u8 y
+){
+    _OLED_Draw_H_Line(x1, x2, y, false);
+}
+void OLED_Erase_H_Line(
+    const u8 x1,
+    const u8 x2, 
+    const u8 y
+){
+    _OLED_Draw_H_Line(x1, x2, y, true);
 }
 
 /// Reserve 8 bytes for a single column.
@@ -237,11 +328,11 @@ void OLED_DrawRectangle(
     
     OLED_DATA_WRITE(y1, y2, x, x + width);
     
-    const u8 page0 = 0b11111111; // pretend that we only fill 128x1
+    const u8 page0 = 0b00001111; // pretend that we only fill 128x1
     I2C_Master_Write(page0);
     
     for(u8 _x = 0; _x < x + width-2; _x++){
-        const u8 page = 0b10000001; // pretend that we only fill 128x1
+        const u8 page = 0b00001001; // pretend that we only fill 128x1
         I2C_Master_Write(page);
     }
     
@@ -352,7 +443,7 @@ const char Font2[220] = {
 0x02, 0x01, 0x02, 0x04, 0x02
 };
 
-void OLED_PutChar(u8 c, u8 x, u8 y) {
+void OLED_PutChar(u8 c, u8 x, u8 y, bool invert) {
   u8 font_c;
   
   
@@ -371,19 +462,23 @@ void OLED_PutChar(u8 c, u8 x, u8 y) {
     } else {
         offs = (c - 'S')*5;
         font_c = Font2[offs + i];
-    } 
-    
-    I2C_Master_Write(~font_c);
+    }    
+    I2C_Master_Write(invert ? ~font_c : font_c);
   }
   I2C_Master_Stop();
 }
-void OLED_Printf(const char* c, u8 x, u8 y){
+void OLED_PrintString(const char* c, u8 x, u8 y, bool invert){
     OLED_Command(SSD1306_SEGREMAP_FLIP);
     u8 counter = 0;
     while(*c!=0x00){
-        OLED_PutChar(*c, x + counter * CHAR_SIZE, y);
+        OLED_PutChar(*c, x + counter * CHAR_SIZE, y, invert);
         counter++;
         c++;
     }
-//    OLED_Command(SSD1306_SEGREMAP);
+}
+void OLED_Printf(const char* c, u8 x, u8 y){
+    OLED_PrintString(c, x, y, false);
+}
+void OLED_Printfi(const char* c, u8 x, u8 y){
+    OLED_PrintString(c, x, y, true);
 }

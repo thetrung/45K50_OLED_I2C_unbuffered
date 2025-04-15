@@ -14,5 +14,6 @@
 
 void loop(void);
 void blink(void);
+void ADC_Init(void);
 
 #endif
