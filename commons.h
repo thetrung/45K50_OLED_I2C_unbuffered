@@ -15,6 +15,7 @@
 #define COMMONS_H
 
 #include <xc.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 

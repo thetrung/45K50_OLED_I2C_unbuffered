@@ -58,8 +58,10 @@
 #define SSD1306_ACTIVATE_SCROLL                      0x2F
 #define SSD1306_SET_VERTICAL_SCROLL_AREA             0xA3
 
+#if !defined SELECTED_SSD1306_EXTERNALVCC || SELECTED_SSD1306_SWITCHCAP_VCC
+    #define  SELECTED_SSD1306_EXTERNALVCC // default 
+#endif 
 #define FRAMEBUFFER 1024 // for 128x64
-
 #define CHAR_SIZE 5 // Character : 5x8 (1-page)
 
 

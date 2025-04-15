@@ -12,7 +12,8 @@
 
 #include "commons.h"
 #include "I2CMaster.h"
-#include "OLED.h"
+//#include "OLED.h"
+#include "ssd1306_buffered.h"
 
 #pragma config FOSC = INTOSCIO  // Oscillator Selection (Internal oscillator)
 #pragma config WDTEN = OFF      // Watch-Dog-Enable = OFF

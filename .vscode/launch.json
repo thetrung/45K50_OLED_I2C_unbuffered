@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch 45K50_SSD1306_I2C: default",
+            "type": "mplab-core-da",
+            "request": "launch",
+            "project": "45K50_SSD1306_I2C",
+            "configuration": "default",
+            "tool": "${command:pickTool}",
+            "stopOnEntry": true,
+            "preLaunchTask": "45K50_SSD1306_I2C: default - Full Build"
+        }
+    ]
+}

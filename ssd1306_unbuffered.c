@@ -1,13 +1,14 @@
-/*
- * 20190312.014
- * OLED 128x32 -> 128x64
- *
- * File: OLED.c
- * Processor: PIC16F1825 -> PIC18F45K50
- * Author: wizlab.it && thetrung.
+/* 15th April 2025 @ MPLAB X IDE 6.20
+ * Unbuffered Drawing to SSD1306 128x64
+ * Tested on PIC18F45K50.
+ * 
+ * Cost ~48 Bytes only !!?
+ * So almost any PIC can work with it,
+ * Unlike buffered version that require 1KB+ SRAM.
  */
+#include "ssd1306_unbuffered.h"
 
-#include "OLED.h"
+//static u8 framebuffer[128*64/8];
 
 void OLED_Command(uint8_t c) {
     I2C_Master_Start();
@@ -64,15 +65,45 @@ void init_OLED(void) {
         SSD1306_MEMORYMODE,             //Memory Addressing Mode (0x20)
         SSD1306_MEMORYMODE_HORZ,        //Vertical/Horizontal addressing mode (0x01/0x02)
         SSD1306_SEGREMAP_FLIP,          //Segment Re-map (0xA0) as COL0=SEG0 (0x00)
-        SSD1306_COMSCANDEC,             //Scan from N -> 0 
-        SSD1306_SETCOMPINS,             //COM Pins (0xDA)
-            0x12,                       //Sequential, disabled remap
-        SSD1306_SETCONTRAST,            //Contrast Control (0x81)
-            0x8F,                       //Contrast to 0x8F
+        SSD1306_COMSCANDEC,             //Scan from N -> 0        
+#if defined SSD1306_128_32
+        SSD1306_SETCOMPINS,                    // 0xDA
+        0x02,
+        SSD1306_SETCONTRAST,                   // 0x81
+        0x8F,
+#elif defined SSD1306_128_64
+        SSD1306_SETCOMPINS,                    // 0xDA
+        0x12,
+        SSD1306_SETCONTRAST,                   // 0x81
+        #if defined SELECTED_SSD1306_EXTERNALVCC
+            0x9F,
+        #else
+            0xCF,
+        #endif
+#elif defined SSD1306_96_16
+        SSD1306_SETCOMPINS,                    // 0xDA
+        0x2,   //ada x12
+        SSD1306_SETCONTRAST,                   // 0x81
+        #if defined SELECTED_SSD1306_EXTERNALVCC
+            0x10, 
+        #else
+            0xAF,
+        #endif
+#endif
+        // Default tested setting ::
+        // SSD1306_SETCOMPINS,             //COM Pins (0xDA)
+        //     0x12,                       //Sequential, disabled remap
+        // SSD1306_SETCONTRAST,            //Contrast Control (0x81)
+        //     0x8F,                       //Contrast to 0x8F
         SSD1306_SETPRECHARGE,           //Pre-charge Period (0xD9)
-            0xF1,                       //Period to 0xF1
+#if defined SELECTED_SSD1306_EXTERNALVCC
+        0xF1,
+#else
+        0x22,
+#endif
+//            0xF1,                       //Period to 0xF1
         SSD1306_SETVCOMDETECT,          //VCOMH Deselect Level (0xDB)
-            0x20,                       //Level to 0x20
+            0x40,                       //Level to 0x20~0x40
         SSD1306_DISPLAYALLON_RESUME,    //Display based on RAM (0xA4)
         SSD1306_NORMALDISPLAY,          //Normal display (0xA6)
         SSD1306_DEACTIVATE_SCROLL,      //Deactivate scroll (0x2E)

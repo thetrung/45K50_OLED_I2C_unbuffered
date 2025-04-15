@@ -52,20 +52,20 @@ void I2C_Master_Stop(void) {
     PEN = 1;
 }
 
-void I2C_Master_Address(uint8_t address, uint8_t mode) {
-    uint8_t addressWithMode;
+void I2C_Master_Address(u8 address, u8 mode) {
+    u8 addressWithMode;
     addressWithMode = address << 1;
     addressWithMode += mode;
     I2C_Master_Wait();
     SSPBUF = addressWithMode;
 }
 
-void I2C_Master_Write(uint8_t d) {
+void I2C_Master_Write(u8 d) {
     I2C_Master_Wait();
     SSPBUF = d;
 }
 
-unsigned char I2C_Master_Read(uint8_t a) {
+unsigned char I2C_Master_Read(u8 a) {
     uint8_t temp;
     I2C_Master_Wait();
     RCEN = 1;

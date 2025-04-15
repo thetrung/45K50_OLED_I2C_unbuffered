@@ -5,9 +5,10 @@ set(45K50_SSD1306_I2C_default_default_XC8_FILE_TYPE_assemblePreprocess)
 set_source_files_properties(${45K50_SSD1306_I2C_default_default_XC8_FILE_TYPE_assemblePreprocess} PROPERTIES LANGUAGE ASM)
 set(45K50_SSD1306_I2C_default_default_XC8_FILE_TYPE_compile
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../I2CMaster.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../../OLED.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../init.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../../main.c")
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../main.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../ssd1306_buffered.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../ssd1306_unbuffered.c")
 set_source_files_properties(${45K50_SSD1306_I2C_default_default_XC8_FILE_TYPE_compile} PROPERTIES LANGUAGE C)
 set(45K50_SSD1306_I2C_default_default_XC8_FILE_TYPE_link)
 
