@@ -16,11 +16,15 @@
 
 #include <xc.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define _XTAL_FREQ 16000000     //CPU Frequency
 // uintX_t
 #define u8 uint8_t
 #define u16 uint16_t
+// intX_t
+#define i8 int8_t
+#define i16 int16_t
 
 // MODE
 #define LOW 0
@@ -48,7 +52,7 @@
 #define PIN_RA4 TRISA4
 #define PIN_RA5 TRISA5
 #define PIN_RA6 TRISA6
-#define PIN_RA5 TRISA7
+#define PIN_RA7 TRISA7
 
 // FUNCTIONS 
 #define pinMode(PIN, MODE) (PIN = MODE)
